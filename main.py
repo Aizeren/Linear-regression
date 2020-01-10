@@ -7,7 +7,7 @@ from functions import train_test_split
 from functions import rmse
 
 if __name__ == "__main__":
-    X, y = make_regression(n_samples=2000, n_features=1, noise = 10)
+    X, y = make_regression(n_samples=20, n_features=3, noise = 10)
     X, y = X.tolist(), y.tolist()
 
     X = Matrix(X)
@@ -20,14 +20,29 @@ if __name__ == "__main__":
 
     print('RMSE = ', rmse(y_test, prediction))
 
-    lnrReg.L2(X_train, y_train, 6)
-    prediction = lnrReg.predict(X_test)
+    beg = 0
+    end = 100
 
-    print('RMSE = ', rmse(y_test, prediction))
+    func = lambda i: i if i>0 else (-1/i if i<0 else 1)
+    lmbd = [func(i) for i in range(beg, end, 1)]
+    coefs = [[]]*len(lnrReg.coef.arr)
+    for col in range(0, len(lnrReg.coef.arr)):
+        coefs[col] = [0]*len(lmbd)
 
-    plt.scatter([row[0] for row in X_test.arr], y_test.arr)
-    plt.plot([row[0] for row in X_test.arr], prediction.arr, 'r')
-    plt.xlabel('X') 
-    plt.ylabel('y')
+    for i in range(beg, end, 1):
+        
+        lnrReg.L2(X_train, y_train, i)
+        for j in range(0, len(coefs)):
+            coefs[j][i] = lnrReg.coef.arr[j][0]
+
+    # plt.scatter([row[0] for row in X_test.arr], y_test.arr)
+    # plt.plot([row[0] for row in X_test.arr], prediction.arr, 'r')
+
+    # plt.xlabel('X') 
+    # plt.ylabel('y')
+    for i in range(0, len(coefs)):
+        plt.plot(lmbd, coefs[i])
+    plt.xlabel('lambda') 
+    plt.ylabel('coefficients')
 
     plt.show() 
