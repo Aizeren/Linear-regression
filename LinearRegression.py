@@ -12,3 +12,10 @@ class LinearRegression():
     def predict(self, X):
         X = X.add_ones_left()
         return X*self.coef
+
+    def L2(self, X: Matrix, y: Matrix, lmbd: float):
+        X = X.add_ones_left()
+        E = Matrix(nrows=X.ncolumns, ncolumns=X.ncolumns)
+        for i in range(0, E.nrows):
+            E.arr[i][i] = lmbd
+        self.coef = ((((X.transp() * X) + E).inverse())*X.transp())*y

@@ -103,6 +103,18 @@ class Matrix():
         
         return res
 
+    def __add__(self, other):
+        if self.nrows != other.nrows:
+            raise ValueError('self.nrows != other.nrows')
+        if self.ncolumns != other.ncolumns:
+            raise ValueError('self.ncolumns != other.ncolumns')
+        res = Matrix(nrows=self.nrows, ncolumns=self.ncolumns)
+        for row in range(0, self.nrows):
+            for col in range(0, self.ncolumns):
+                res.arr[row][col] = self.arr[row][col] + other.arr[row][col]
+        
+        return res
+
 
     def __str__(self):
         arrstr = ''
